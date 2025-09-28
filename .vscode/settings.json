@@ -4,6 +4,8 @@
         "xstring": "cpp",
         "xutility": "cpp",
         "exception": "cpp",
-        "xmemory": "cpp"
+        "xmemory": "cpp",
+        "limits": "cpp",
+        "utility": "cpp"
     }
 }

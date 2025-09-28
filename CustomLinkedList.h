@@ -30,14 +30,17 @@ public:
 class CustomLinkedList
 {
 public:
-    CustomLinkedList();
+    CustomLinkedList(bool isSorted);
     CustomLinkedList(const CustomLinkedList& other);
     CustomLinkedList& operator=(const CustomLinkedList& other);
     ~CustomLinkedList();
 
+    void changeIsSorted();
     void insertTask(Task task);
     void deleteTask(std::string taskID);
     Task findTask(std::string taskID) const;
+    Task getMin();
+    Task getMax();
 
     TaskIterator getTaskIterator();
 private:
@@ -47,11 +50,17 @@ private:
     void splitList(Node* source, Node** frontPtr, Node** backPtr);
 
     Node* head;
-    Node* tail;   
+    Node* tail; 
+    
+    bool isSorted;
 };
 
-CustomLinkedList::CustomLinkedList()
-{}
+CustomLinkedList::CustomLinkedList(bool isSorted)
+{
+    this->isSorted = isSorted;
+    this->head = nullptr;
+    this->tail = nullptr;
+}
 CustomLinkedList::CustomLinkedList(const CustomLinkedList& other)
 {
     this->head = nullptr;
@@ -122,13 +131,27 @@ CustomLinkedList::~CustomLinkedList()
     }
 }
 
-void CustomLinkedList::insertTask(Task task)
+void CustomLinkedList::changeIsSorted()
+{
+    !this->isSorted;
+}
+void CustomLinkedList::insertTask(const Task& task)
 {
     Node* new_node = new Node(task);
-    this->tail->next = new_node;
-    new_node->prev = this->tail;
-    this->tail = new_node;
-    this->sort();
+    if (this->head == nullptr) 
+    {
+        this->head = new_node;
+        this->tail = new_node;
+    } 
+    else 
+    {
+        this->tail->next = new_node;
+        new_node->prev = this->tail;
+        this->tail = new_node;
+    }
+
+    if(this->isSorted)
+        this->sort();
 }
 void CustomLinkedList::deleteTask(std::string taskID)
 {
@@ -163,11 +186,58 @@ void CustomLinkedList::deleteTask(std::string taskID)
 
     delete temp;
 }
+Task CustomLinkedList::getMin()
+{
+    if (this->head == nullptr) 
+    {
+        throw "List is empty.";
+    }
 
+    if (this->isSorted)
+        return *(this->head->data);
+    
+    Node* min_node = this->head;
+    Node* temp = this->head->next;
+    while (temp != nullptr)
+    {
+        if (min_node->data->get_priority() > temp->data->get_priority() ||
+           (min_node->data->get_priority() == temp->data->get_priority() && min_node->data->get_deadline() > temp->data->get_deadline()))
+        {
+            min_node = temp;
+        }
+        temp = temp->next;
+    }
+
+    return *(min_node->data);
+}
+Task CustomLinkedList::getMax()
+{
+    if (this->head == nullptr) 
+    {
+        throw "List is empty.";
+    }
+
+    if (this->isSorted)
+        return *(this->tail->data);
+
+    Node* max_node = this->head;
+    Node* temp = this->head->next;
+    while (temp != nullptr)
+    {
+        if (max_node->data->get_priority() < temp->data->get_priority() ||
+           (max_node->data->get_priority() == temp->data->get_priority() && max_node->data->get_deadline() < temp->data->get_deadline()))
+        {
+            max_node = temp;
+        }
+        temp = temp->next;
+    }
+    return *(max_node->data);
+}
 TaskIterator CustomLinkedList::getTaskIterator()
 {
     return TaskIterator(this->head);
 }
+
 //merge sort
 void CustomLinkedList::sort()
 {
