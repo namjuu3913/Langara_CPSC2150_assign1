@@ -1,4 +1,4 @@
-#include "NodeList.h"
+#include "CustomLinkedList.h"
 #include "Task.h"
 #include <string>
 
@@ -23,10 +23,7 @@ TaskIterator::TaskIterator(Node* head)
     this->currentNode = head;
 }
 TaskIterator::~TaskIterator()
-{
-    delete currentNode;
-    delete listHead;
-}
+{}
 bool TaskIterator::hasNext()
 {
     return this->currentNode != nullptr;
