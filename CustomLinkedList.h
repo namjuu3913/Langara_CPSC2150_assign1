@@ -6,6 +6,7 @@ Section: 001
 */
 #include "Task.h"
 #include <string>
+#include "TaskIterator.h"
 
 class Node
 {
@@ -29,7 +30,7 @@ public:
 class CustomLinkedList
 {
 public:
-    CustomLinkedList(bool is_priority_max);
+    CustomLinkedList();
     CustomLinkedList(const CustomLinkedList& other);
     CustomLinkedList& operator=(const CustomLinkedList& other);
     ~CustomLinkedList();
@@ -37,21 +38,20 @@ public:
     void insertTask(Task task);
     void deleteTask(std::string taskID);
     Task findTask(std::string taskID) const;
+
+    TaskIterator getTaskIterator();
 private:
     void sort();
     void mergeSort(Node** headPtr);
     Node* merge(Node* a, Node* b);
     void splitList(Node* source, Node** frontPtr, Node** backPtr);
 
-    bool is_priority_max;
     Node* head;
-    Node* tail;
+    Node* tail;   
 };
 
-CustomLinkedList::CustomLinkedList(bool is_priority_max)
-{
-    this->is_priority_max = is_priority_max;
-}
+CustomLinkedList::CustomLinkedList()
+{}
 CustomLinkedList::CustomLinkedList(const CustomLinkedList& other)
 {
     this->head = nullptr;
@@ -162,6 +162,11 @@ void CustomLinkedList::deleteTask(std::string taskID)
     }
 
     delete temp;
+}
+
+TaskIterator CustomLinkedList::getTaskIterator()
+{
+    return TaskIterator(this->head);
 }
 //merge sort
 void CustomLinkedList::sort()
