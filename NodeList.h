@@ -234,7 +234,9 @@ Node* CustomLinkedList::merge(Node* a, Node* b)
     if (b == nullptr) return a;
 
     Node* result = nullptr;
-    if (a->data->get_priority() <= b->data->get_priority()) 
+
+    if (a->data->get_priority() < b->data->get_priority() ||
+        (a->data->get_priority() == b->data->get_priority() && a->data->get_deadline() <= b->data->get_deadline()))
     {
         result = a;
         Node* mergedTail = merge(a->next, b);
@@ -244,13 +246,13 @@ Node* CustomLinkedList::merge(Node* a, Node* b)
         {
             mergedTail->prev = result;
         }
-    } 
-    else 
+    }
+    else
     {
         result = b;
         Node* mergedTail = merge(a, b->next);
         result->next = mergedTail;
-        
+
         if (mergedTail != nullptr) 
         {
             mergedTail->prev = result;
