@@ -1,6 +1,8 @@
-#include "CustomLinkedList.h"
+#pragma once
+#include "ListedPQueue.h"
 #include "Task.h"
 #include <string>
+#include "Node.h"
 
 class TaskIterator
 {

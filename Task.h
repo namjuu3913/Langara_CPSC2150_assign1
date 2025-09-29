@@ -4,6 +4,7 @@ ID:100421921
 Instructor: Bita Shadgar
 Section: 001
 */
+#pragma once
 #include <string>
 #include <iostream>
 
@@ -16,13 +17,14 @@ public:
 
     I used dynamic memory allocation to prevent from the stack overflow when the size of the Task classes is larger then the size of stack.
     */
-    Task(const std::string string_info[3], const int integer_info[2]) 
+    Task(const std::string task_id, const std::string description, 
+            const int priority, const int deadline, const std::string dependency) 
     {
-        task_id     = new std::string(string_info[0]);
-        description = new std::string(string_info[1]);
-        dependency  = new std::string(string_info[2]);
-        priority    = new int(integer_info[0]);
-        deadline    = new int(integer_info[1]);
+        this->task_id     = new std::string(task_id);
+        this->description = new std::string(description);
+        this->dependency  = new std::string(dependency);
+        this->priority    = new int(priority);
+        this->deadline    = new int(deadline);
     }
     Task(const Task& other) 
     {

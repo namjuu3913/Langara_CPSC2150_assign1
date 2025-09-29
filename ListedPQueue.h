@@ -4,38 +4,20 @@ ID:100421921
 Instructor: Bita Shadgar
 Section: 001
 */
+#pragma once
 #include "Task.h"
 #include <string>
 #include "TaskIterator.h"
+#include "Node.h"
 
-class Node
+class ListedPQueue
 {
 public:
-    Node(const Task& val)
-    {
-        this->data = new Task(val);
-        this->prev = nullptr;
-        this->next = nullptr;
-    }
-    ~Node()
-    {
-        delete data;
-    }
+    ListedPQueue(bool isSorted);
+    ListedPQueue(const ListedPQueue& other);
+    ListedPQueue& operator=(const ListedPQueue& other);
+    ~ListedPQueue();
     
-    Task* data;
-    Node* prev;
-    Node* next;
-};
-
-class CustomLinkedList
-{
-public:
-    CustomLinkedList(bool isSorted);
-    CustomLinkedList(const CustomLinkedList& other);
-    CustomLinkedList& operator=(const CustomLinkedList& other);
-    ~CustomLinkedList();
-
-    void changeIsSorted();
     void insertTask(Task task);
     void deleteTask(std::string taskID);
     void deleteMin();
@@ -56,13 +38,13 @@ private:
     bool isSorted;
 };
 
-CustomLinkedList::CustomLinkedList(bool isSorted)
+ListedPQueue::ListedPQueue(bool isSorted)
 {
     this->isSorted = isSorted;
     this->head = nullptr;
     this->tail = nullptr;
 }
-CustomLinkedList::CustomLinkedList(const CustomLinkedList& other)
+ListedPQueue::ListedPQueue(const ListedPQueue& other)
 {
     this->head = nullptr;
     this->tail = nullptr;
@@ -84,7 +66,7 @@ CustomLinkedList::CustomLinkedList(const CustomLinkedList& other)
         }
     }
 }
-CustomLinkedList& CustomLinkedList::operator=(const CustomLinkedList& other)
+ListedPQueue& ListedPQueue::operator=(const ListedPQueue& other)
 {
     if(this == &other)
     {
@@ -121,7 +103,7 @@ CustomLinkedList& CustomLinkedList::operator=(const CustomLinkedList& other)
 
     return *this;
 }
-CustomLinkedList::~CustomLinkedList()
+ListedPQueue::~ListedPQueue()
 {
     Node* temp_del = this->head;
     for(;temp_del != nullptr;)
@@ -132,11 +114,7 @@ CustomLinkedList::~CustomLinkedList()
     }
 }
 
-void CustomLinkedList::changeIsSorted()
-{
-    !this->isSorted;
-}
-void CustomLinkedList::insertTask(const Task& task)
+void ListedPQueue::insertTask(Task task)
 {
     Node* new_node = new Node(task);
     if (this->head == nullptr) 
@@ -154,7 +132,7 @@ void CustomLinkedList::insertTask(const Task& task)
     if(this->isSorted)
         this->sort();
 }
-void CustomLinkedList::deleteMin()
+void ListedPQueue::deleteMin()
 {
     if (this->head == nullptr) 
     {
@@ -178,11 +156,11 @@ void CustomLinkedList::deleteMin()
     }
     else
     {
-        Task* temp = this->getMin();
-        this->deleteTask(minTask.get_task_id());
+        Task temp = this->getMin();
+        this->deleteTask(temp.get_task_id());
     }
 }
-void CustomLinkedList::deleteTask(std::string taskID)
+void ListedPQueue::deleteTask(std::string taskID)
 {
     Node* temp = this->head;
     while (temp != nullptr && temp->data->get_task_id() != taskID)
@@ -215,7 +193,7 @@ void CustomLinkedList::deleteTask(std::string taskID)
 
     delete temp;
 }
-Task CustomLinkedList::getMin()
+Task ListedPQueue::getMin()
 {
     if (this->head == nullptr) 
     {
@@ -239,7 +217,7 @@ Task CustomLinkedList::getMin()
 
     return *(min_node->data);
 }
-Task CustomLinkedList::getMax()
+Task ListedPQueue::getMax()
 {
     if (this->head == nullptr) 
     {
@@ -262,13 +240,22 @@ Task CustomLinkedList::getMax()
     }
     return *(max_node->data);
 }
-TaskIterator CustomLinkedList::getTaskIterator()
+Task ListedPQueue::findTask(std::string taskID) const 
+{
+    for (Node* cur = head; cur != nullptr; cur = cur->next) 
+    {
+        if (cur->data->get_task_id() == taskID) 
+            return *(cur->data);
+    }
+    throw std::string("Task ") + taskID + " not found";
+}
+TaskIterator ListedPQueue::getTaskIterator()
 {
     return TaskIterator(this->head);
 }
 
 //merge sort
-void CustomLinkedList::sort()
+void ListedPQueue::sort()
 {
     mergeSort(&this->head);
 
@@ -278,6 +265,7 @@ void CustomLinkedList::sort()
     }
     else
     {
+        head->prev = nullptr;
         Node* temp = this->head;
         for(;temp->next != nullptr;)
         {
@@ -286,7 +274,7 @@ void CustomLinkedList::sort()
         this->tail = temp;
     }
 }
-void CustomLinkedList::mergeSort(Node** headPtr)
+void ListedPQueue::mergeSort(Node** headPtr)
 {
     Node* head = *headPtr;
     Node* leftHalf;
@@ -305,7 +293,7 @@ void CustomLinkedList::mergeSort(Node** headPtr)
 
     *headPtr = merge(leftHalf, rightHalf);
 }
-void CustomLinkedList::splitList(Node* source, Node** frontPtr, Node** backPtr)
+void ListedPQueue::splitList(Node* source, Node** frontPtr, Node** backPtr)
 {
     Node* high;
     Node* low;
@@ -331,7 +319,7 @@ void CustomLinkedList::splitList(Node* source, Node** frontPtr, Node** backPtr)
         (*backPtr)->prev = nullptr;
     }
 }
-Node* CustomLinkedList::merge(Node* a, Node* b)
+Node* ListedPQueue::merge(Node* a, Node* b)
 {
     // Base cases
     if (a == nullptr) return b;
