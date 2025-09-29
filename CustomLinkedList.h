@@ -38,6 +38,7 @@ public:
     void changeIsSorted();
     void insertTask(Task task);
     void deleteTask(std::string taskID);
+    void deleteMin();
     Task findTask(std::string taskID) const;
     Task getMin();
     Task getMax();
@@ -152,6 +153,34 @@ void CustomLinkedList::insertTask(const Task& task)
 
     if(this->isSorted)
         this->sort();
+}
+void CustomLinkedList::deleteMin()
+{
+    if (this->head == nullptr) 
+    {
+        throw "List is empty.";
+    }
+    if (this->isSorted)
+    {
+        Node* temp = this->head;   
+
+        if (this->head == this->tail)
+        {
+            this->head = nullptr;
+            this->tail = nullptr;   
+        }
+        else
+        {
+            this->head = this->head->next;
+            this->head->prev = nullptr;
+        }
+        delete temp;
+    }
+    else
+    {
+        Task* temp = this->getMin();
+        this->deleteTask(minTask.get_task_id());
+    }
 }
 void CustomLinkedList::deleteTask(std::string taskID)
 {
