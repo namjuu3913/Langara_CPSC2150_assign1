@@ -23,7 +23,7 @@ public:
         this->task_id     = new std::string(task_id);
         this->description = new std::string(description);
         this->dependency  = new std::string(dependency);
-        this->priority    = new int(priority);
+        this->priority    = new std::string(priority);
         this->deadline    = new int(deadline);
     }
     Task(const Task& other) 

@@ -10,7 +10,7 @@
 struct RawTaskRow {
     std::string id;
     std::string desc;
-    std::string priorityOrExpr; // 숫자 or 수식
+    std::string priorityOrExpr;
     int         deadline;
     std::string dependency;
 };
