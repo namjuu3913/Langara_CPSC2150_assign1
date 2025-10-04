@@ -1,66 +1,69 @@
 #pragma once
 #include <string>
-#include <vector>
-#include <stack>
-#include <string>
+#include <stdexcept>
 
-int precedence_operator(char c)
+template <typename T>
+class StackNode 
 {
-    if(c == '/' || c == '*')
-        return 2;
-    else if(c == '+' || c == '-')
-        return 1;
-    else
-        return -1;
-}
+public:
+    T data;
+    StackNode<T>* next;
+    StackNode(T val) : data(val), next(nullptr) {}
+};
 
-
-std::string infixToPostfix(std::string &infix)
+template <typename T>
+class Stack 
 {
-    std::stack<char> _stack_;
-    std::string reval;
+private:
+    StackNode<T>* topNode;
+    int count;
 
-    for(int i = 0; i < infix.length(); i++)
+public:
+    Stack() : topNode(nullptr), count(0) {}
+    ~Stack() 
     {
-        char temp_c = infix[i];
-        
-        if (temp_c >= '0' && temp_c <= '9')
-            reval += temp_c;
-
-        else if(temp_c == '(')
-            _stack_.push('(');
-        else if(temp_c == ')')
+        while (!isEmpty()) 
         {
-            while(!_stack_.empty() && _stack_.top() != '(')
-            {
-                reval += _stack_.top();
-                _stack_.pop();
-            }
-            _stack_.pop();
-        }
-        else
-        {
-            while(!_stack_.empty() && _stack_.top() != '(' &&
-                    (precedence_operator(_stack_.top()) > precedence_operator(temp_c) || precedence_operator(_stack_.top()) == precedence_operator(temp_c)
-                ))
-                {
-                    reval += _stack_.top();
-                    _stack_.pop();
-                }
-                _stack_.push(temp_c);
+            pop();
         }
     }
 
-    while(!_stack_.empty())
+    void push(T val) 
     {
-        reval += _stack_.top();
-        _stack_.pop();
+        StackNode<T>* newNode = new StackNode<T>(val);
+        newNode->next = topNode;
+        topNode = newNode;
+        count++;
     }
 
-    return reval;
-}
+    T pop() {
+        if (isEmpty()) 
+            throw std::runtime_error("Stack is empty");
 
-int computePostfix(std::string postfix)
-{
+        StackNode<T>* temp = topNode;
+        T val = temp->data;
+        topNode = topNode->next;
 
-}
+        delete temp;
+
+        count--;
+        return val;
+    }
+
+    T top() 
+    {
+        if (isEmpty()) 
+            throw std::runtime_error("Stack is empty");
+        return topNode->data;
+    }
+
+    bool isEmpty() 
+    {
+        return topNode == nullptr;
+    }
+    
+    int size() 
+    {
+        return count;
+    }
+};
