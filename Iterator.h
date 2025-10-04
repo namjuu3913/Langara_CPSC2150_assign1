@@ -24,7 +24,7 @@ public:
         {
             throw std::out_of_range("No more elements in the list.");
         }
-        T& data = current->data;
+        T& data = current->data; 
         current = current->next;
         return data;
     }

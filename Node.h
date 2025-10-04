@@ -1,21 +1,18 @@
-#pragma once
-#include "Task.h"
 
+#pragma once
+
+template <typename T>
 class Node
 {
 public:
-    Node(const Task& val)
+    Node(const T& val)
     {
-        this->data = new Task(val);
+        this->data = val;
         this->prev = nullptr;
         this->next = nullptr;
     }
-    ~Node()
-    {
-        delete data;
-    }
     
-    Task* data;
+    T data;
     Node* prev;
     Node* next;
 };
